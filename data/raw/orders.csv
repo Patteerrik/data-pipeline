@@ -1,0 +1,4 @@
+order_id,customer_id,amount,currency,date
+1,101,250,SEK,2024-01-01
+2,102,100,SEK,2024-01-02
+3,101,300,SEK,2024-01-03
