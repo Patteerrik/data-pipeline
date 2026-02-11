@@ -1,9 +1,9 @@
 import os
-
+from sqlalchemy import select, func
 import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.dialects.postgresql import insert
 
 from db.models import Base, Order
 
@@ -27,22 +27,28 @@ def load_orders(df: pd.DataFrame) -> int:
 
     records = df.to_dict(orient="records")
 
-    with Session(engine) as session:
-        for r in records:
-            exists = session.get(Order, r["order_id"])
-            if exists:
-                continue
+    with engine.begin() as conn:
+        stmt = insert(Order).values(records)
 
-            session.add(
-                Order(
-                    order_id=r["order_id"],
-                    customer_id=r["customer_id"],
-                    amount=r["amount"],
-                    currency=r["currency"],
-                    date=r["date"],
-                )
-            )
-        session.commit()
+        # om order_id finns: uppdatera övriga fält
+        update_cols = {
+            "customer_id": stmt.excluded.customer_id,
+            "amount": stmt.excluded.amount,
+            "currency": stmt.excluded.currency,
+            "date": stmt.excluded.date,
+        }
 
-    with Session(engine) as session:
-        return session.query(Order).count()
+        stmt = stmt.on_conflict_do_update(
+            index_elements=[Order.order_id],
+            set_=update_cols,
+        )
+
+        conn.execute(stmt)
+
+        # returnera total rows i tabellen
+        count = conn.execute(
+            select(func.count()).select_from(Order)
+        ).scalar_one()
+
+
+    return int(count)
