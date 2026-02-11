@@ -15,5 +15,23 @@ services:
       timeout: 3s
       retries: 15
 
+  pipeline:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://pipeline_user:pipeline_pass@db:5432/pipeline
+    command: ["python", "-m", "pipeline.run"]
+
+  tests:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://pipeline_user:pipeline_pass@db:5432/pipeline
+    command: ["pytest", "-q"]
+
 volumes:
   pgdata:
