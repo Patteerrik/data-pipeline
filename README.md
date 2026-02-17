@@ -1,36 +1,36 @@
 # Data Pipeline (Python + Postgres)
 
-A production-style data pipeline that ingests data, transforms it, stores it in
-PostgreSQL, and validates behavior with tests.
+A production-style data pipeline that ingests data, transforms it,
+stores it in PostgreSQL, and validates behavior with tests.
 
 ---
 
 ## Stack
-- Python, pandas
+
+- Python
+- pandas
 - PostgreSQL (Docker)
 - SQLAlchemy
 - pytest
 
 ---
 
-## Project structure
-- `data/raw/` input data
-- `pipeline/transform.py` schema + type casting + validation
-- `pipeline/load.py` DB init + idempotent load
-- `tests/` unit/integration tests
+## Project Structure
+
+- `data/raw/` – input data
+- `pipeline/transform.py` – validation + type casting
+- `pipeline/load.py` – DB init + idempotent upsert
+- `tests/` – unit & integration tests
 
 ---
 
-## Quickstart
-1) Start database
+## Quickstart (Recommended)
+
+Make sure you have Docker and Docker Compose installed.
+
 ```bash
-docker compose up -d
+make reset   # fresh database + rebuild containers
+make test    # run test suite
+make run     # run the pipeline
 
 ---
-
-## Run with Docker
-```bash
-docker compose up -d --build
-docker compose run --rm pipeline
-docker compose run --rm tests
-```
