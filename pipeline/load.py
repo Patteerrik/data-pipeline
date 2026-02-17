@@ -24,6 +24,9 @@ def init_db(engine) -> None:
 def load_orders(df: pd.DataFrame) -> int:
     engine = get_engine()
     init_db(engine)
+    if "source" not in df.columns:
+        df = df.copy()
+        df["source"] = "csv"
 
     records = df.to_dict(orient="records")
 
@@ -36,6 +39,7 @@ def load_orders(df: pd.DataFrame) -> int:
             "amount": stmt.excluded.amount,
             "currency": stmt.excluded.currency,
             "date": stmt.excluded.date,
+            "source": stmt.excluded.source,
         }
 
         stmt = stmt.on_conflict_do_update(
@@ -49,6 +53,5 @@ def load_orders(df: pd.DataFrame) -> int:
         count = conn.execute(
             select(func.count()).select_from(Order)
         ).scalar_one()
-
 
     return int(count)
