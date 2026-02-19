@@ -6,6 +6,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.dialects.postgresql import insert
 
 from db.models import Base, Order
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Starting load process")
 
 load_dotenv()
 

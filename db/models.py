@@ -1,9 +1,20 @@
-from sqlalchemy import Date, Float, Integer, String
+from sqlalchemy import Date, Float, Integer, String, UniqueConstraint, Column
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
     pass
+
+
+class Message(Base):
+    __tablename__ = "messages"
+
+    id = Column(Integer, primary_key=True)
+    source = Column(String, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("source", name="uq_messages_source"),
+    )
 
 
 class Order(Base):
