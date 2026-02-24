@@ -1,11 +1,18 @@
 import os
 import pytest
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
+from db.models import Base
 
 
 @pytest.fixture(autouse=True)
 def clean_db():
-    url = os.getenv("DATABASE_URL")
-    engine = create_engine(url)
-    with engine.begin() as conn:
-        conn.execute(text("TRUNCATE TABLE orders RESTART IDENTITY CASCADE;"))
+    engine = create_engine(os.environ["DATABASE_URL"])
+
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+
+    assert "orders" in Base.metadata.tables, (
+        f"orders not registered. tables={list(Base.metadata.tables.keys())}"
+    )
+
+    yield

@@ -4,14 +4,11 @@ import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.dialects.postgresql import insert
-
 from db.models import Base, Order
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-logger.info("Starting load process")
 
 load_dotenv()
 
@@ -46,11 +43,21 @@ def load_orders(df: pd.DataFrame) -> int:
             "currency": stmt.excluded.currency,
             "date": stmt.excluded.date,
             "source": stmt.excluded.source,
+            "updated_at": func.now(),
         }
+
+        stmt = insert(Order).values(records)
 
         stmt = stmt.on_conflict_do_update(
             index_elements=[Order.order_id],
-            set_=update_cols,
+            set_={
+                "customer_id": stmt.excluded.customer_id,
+                "amount": stmt.excluded.amount,
+                "currency": stmt.excluded.currency,
+                "date": stmt.excluded.date,
+                "source": stmt.excluded.source,
+                "updated_at": func.now(),
+            },
         )
 
         conn.execute(stmt)
