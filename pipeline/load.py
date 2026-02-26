@@ -6,11 +6,23 @@ from sqlalchemy import create_engine
 from sqlalchemy.dialects.postgresql import insert
 from db.models import Base, Order
 import logging
+import uuid
+from pipeline.staging import load_orders_staging, merge_orders
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
+
+
+def load_orders(df) -> int:
+    batch_id = str(uuid.uuid4())
+
+    load_orders_staging(df, batch_id)
+    merged = merge_orders(batch_id)
+
+    return merged
 
 
 def get_engine():
