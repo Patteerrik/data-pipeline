@@ -11,7 +11,7 @@ The goal of this project was not just to move data, but to understand:
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - Python
 - pandas
@@ -23,7 +23,7 @@ The goal of this project was not just to move data, but to understand:
 
 ---
 
-## 🧠 What This Project Demonstrates
+## What This Project Demonstrates
 
 This project focuses on practical data engineering fundamentals:
 
@@ -37,7 +37,7 @@ The pipeline can be executed multiple times without creating duplicate records.
 
 ---
 
-## 🏗 How It Works
+## How It Works
 
 Raw CSV → Transform → Load (UPSERT) → Core Table
 
@@ -50,7 +50,7 @@ This makes the pipeline safe to run repeatedly.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 data/
@@ -75,7 +75,7 @@ docker-compose.yml      # PostgreSQL container setup
 
 ---
 
-## ⚡ Quickstart
+## Quickstart
 
 Make sure Docker is installed.
 
@@ -87,7 +87,7 @@ make run     # Execute pipeline
 
 ---
 
-## 🧪 Testing Approach
+## Testing Approach
 
 The tests are designed to validate actual database behavior.
 
@@ -102,7 +102,7 @@ The goal was to understand how integration testing works when a real database is
 
 ---
 
-## 🎯 Why I Built This
+## Why I Built This
 
 I wanted to better understand:
 
